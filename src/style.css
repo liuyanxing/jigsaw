@@ -221,16 +221,26 @@ body {
 .levelmap {
   position: absolute;
   inset: 0;
-  overflow: hidden; /* 页面不滚动 */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory; /* 整屏上下翻页 */
   background: #bfe6f5; /* 地图四周露出的天空色填充 */
+  -webkit-overflow-scrolling: touch;
+}
+.map-page {
+  position: relative;
+  height: 100%; /* = 视口高,每页占满一屏 */
+  scroll-snap-align: start;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 .map-canvas {
   position: relative;
-  /* 等比缩放填满视口(cover),只裁掉左右少量边缘;节点按本框百分比定位,随之缩放 */
-  width: max(100%, 56.25vh); /* 56.25vh = 视口高 × (1152/2048);取较大值即可覆盖整屏 */
+  flex: none; /* 不被 flex 收缩,否则超宽地图会被缩回容器宽 → 又出现上下留白 */
+  /* cover:填满一屏、只裁左右少量;实际宽高由 levelMap 按 bg 自然尺寸内联设置,以下为回退值 */
+  width: max(100%, 56.25vh);
   aspect-ratio: 1152 / 2048;
 }
 .map-bg {

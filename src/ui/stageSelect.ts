@@ -1,19 +1,16 @@
-// 选关页:某地点(如"巴黎")下的子关卡列表。世界地图节点 → 本页 → 拼图对局。
-// 资产:返回键、花框标题、完成/进行中徽标、橙色开始按钮(序号牌用 CSS,置于左下角)。
-// 暂缺资产用近似:顶部货币栏用 emoji;锁定用内联 SVG 灰锁;卡面与整页背景用 CSS;
-// 缩略图暂用该关实际会玩的内置图(矩形铺满,贴近参考;后续换地标实拍图)。
+// 选关页:某地点下的子关卡列表。世界地图节点 → 本页 → 拼图对局。
+// 数据来自 LocationConfig(config/levels.ts);进度/解锁来自 storage/progress.ts。
+// 资产:返回键、花框标题、完成/进行中徽标、橙色开始按钮(序号牌用 CSS 圆牌,左下角)。
+// 暂缺资产用近似:顶部货币栏用 emoji;锁定用内联 SVG 灰锁;卡面/整页背景用 CSS。
 
 import backUrl from '../../assets/btn_back.png'
 import floralUrl from '../../assets/label_floral_bg.png'
 import orangeBtnUrl from '../../assets/label_pill_orange_bg.png'
 import checkUrl from '../../assets/icon_check_green.png'
 import moreUrl from '../../assets/icon_more.png'
-import { type LevelDef } from './levelMap'
+import { type LocationConfig } from '../config/levels'
+import { isCompleted, isUnlocked, currentIndex } from '../storage/progress'
 import { type ImageRegistry, type GameImage } from '../assets/images'
-
-const TOTAL = 25 // 每个地点的子关卡数(5×5)
-const DEMO_COMPLETED = 1 // 占位进度:已完成关数
-const DEMO_UNLOCKED = 3 // 占位进度:已解锁关数
 
 // 顶部货币(暂无图标资产,用 emoji 近似参考图)
 const CURRENCIES = [
@@ -32,7 +29,7 @@ const LOCK_SVG = `<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="t
 
 export interface StageSelectHooks {
   onBack(): void
-  onPlay(location: LevelDef, subLevel: number): void
+  onPlay(location: LocationConfig, subLevel: number): void
 }
 
 function div(cls: string): HTMLDivElement {
@@ -46,9 +43,9 @@ export class StageSelect {
   private hooks: StageSelectHooks
   private titleText = document.createElement('span')
   private grid = div('stage-grid')
-  private location: LevelDef | null = null
+  private location: LocationConfig | null = null
   private selected = 0
-  private thumbUrl = ''
+  private thumbCache = new Map<string, string>() // image ref → 缩略图 dataURL
 
   constructor(root: HTMLElement, registry: ImageRegistry, hooks: StageSelectHooks) {
     this.registry = registry
@@ -102,32 +99,24 @@ export class StageSelect {
     root.appendChild(page)
   }
 
-  show(location: LevelDef): void {
+  show(location: LocationConfig): void {
     this.location = location
-    this.titleText.textContent = location.name.replace(/^\d+\.\s*/, '') // "1. 巴黎" → "巴黎"
-    const img = this.registry.get(location.imageId)
-    this.thumbUrl = img ? this.makeThumb(img) : ''
-    this.selected = Math.min(DEMO_COMPLETED, DEMO_UNLOCKED - 1) // 默认选中"当前"关
+    this.titleText.textContent = location.name
+    this.selected = currentIndex(location) // 默认选中"当前"关
     this.buildGrid()
   }
 
-  /** 用该关实际会玩的图渲染一张缩略图(矩形铺满卡面)。 */
-  private makeThumb(img: GameImage): string {
-    const w = 150
-    const h = Math.max(1, Math.round((w * img.height) / img.width))
-    const cv = document.createElement('canvas')
-    cv.width = w
-    cv.height = h
-    cv.getContext('2d')!.drawImage(img.source, 0, 0, w, h)
-    return cv.toDataURL()
-  }
-
   private buildGrid(): void {
+    const loc = this.location
+    if (!loc) return
+    const cur = currentIndex(loc)
     this.grid.replaceChildren()
-    for (let i = 0; i < TOTAL; i++) {
-      const locked = i >= DEMO_UNLOCKED
-      const completed = i < DEMO_COMPLETED
-      const current = i === DEMO_COMPLETED
+
+    loc.levels.forEach((level, i) => {
+      const completed = isCompleted(level.id)
+      const unlocked = isUnlocked(loc, i)
+      const locked = !unlocked
+      const current = i === cur && !completed
 
       const card = document.createElement('button')
       card.className = 'stage-card' + (locked ? ' locked' : '')
@@ -138,8 +127,8 @@ export class StageSelect {
       } else {
         const thumb = document.createElement('img')
         thumb.className = 'card-thumb'
-        thumb.src = this.thumbUrl
         thumb.alt = ''
+        void this.setThumb(thumb, level.image)
         wrap.appendChild(thumb)
         card.onclick = () => {
           this.selected = i
@@ -161,8 +150,32 @@ export class StageSelect {
       card.appendChild(num)
 
       this.grid.appendChild(card)
-    }
+    })
     this.refreshSelection()
+  }
+
+  /** 异步解析该关图片 → 缩略图,按 image ref 缓存(同地点多关共用图只算一次)。 */
+  private async setThumb(imgEl: HTMLImageElement, ref: string): Promise<void> {
+    const cached = this.thumbCache.get(ref)
+    if (cached) {
+      imgEl.src = cached
+      return
+    }
+    const gi = await this.registry.resolve(ref)
+    if (!gi) return
+    const url = this.makeThumb(gi)
+    this.thumbCache.set(ref, url)
+    imgEl.src = url
+  }
+
+  private makeThumb(img: GameImage): string {
+    const w = 150
+    const h = Math.max(1, Math.round((w * img.height) / img.width))
+    const cv = document.createElement('canvas')
+    cv.width = w
+    cv.height = h
+    cv.getContext('2d')!.drawImage(img.source, 0, 0, w, h)
+    return cv.toDataURL()
   }
 
   private refreshSelection(): void {

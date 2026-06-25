@@ -1,0 +1,81 @@
+{
+  "diffRamp": [[3, 3], [4, 4], [5, 5], [6, 6], [7, 7]],
+  "pages": [
+    {
+      "id": "page-1",
+      "background": "/assets/maps/bg_stage_01.webp",
+      "locations": [
+        {
+          "id": "france",
+          "name": "法国",
+          "icon": "/assets/icons/eiffel_tower.png",
+          "map": { "x": 46, "y": 12 },
+          "count": 25,
+          "images": [
+            "/assets/levels/france-1.jpg",
+            "/assets/levels/france-2.jpg",
+            "/assets/levels/france-3.jpg",
+            "/assets/levels/france-4.jpg"
+          ],
+          "seedBase": 1000
+        },
+        {
+          "id": "japan",
+          "name": "日本",
+          "icon": "/assets/icons/mount_fuji.png",
+          "map": { "x": 49, "y": 27 },
+          "count": 25,
+          "images": [
+            "/assets/levels/japan-1.jpg",
+            "/assets/levels/japan-2.jpg",
+            "/assets/levels/japan-3.jpg",
+            "/assets/levels/japan-4.jpg"
+          ],
+          "seedBase": 2000
+        },
+        {
+          "id": "usa",
+          "name": "美国",
+          "icon": "/assets/icons/statue_of_liberty.png",
+          "map": { "x": 44, "y": 43 },
+          "count": 25,
+          "images": [
+            "/assets/levels/usa-1.jpg",
+            "/assets/levels/usa-2.jpg",
+            "/assets/levels/usa-3.jpg",
+            "/assets/levels/usa-4.jpg"
+          ],
+          "seedBase": 3000
+        },
+        {
+          "id": "egypt",
+          "name": "埃及",
+          "icon": "/assets/icons/egypt_pyramids.png",
+          "map": { "x": 40, "y": 59 },
+          "count": 25,
+          "images": [
+            "/assets/levels/egypt-1.jpg",
+            "/assets/levels/egypt-2.jpg",
+            "/assets/levels/egypt-3.jpg",
+            "/assets/levels/egypt-4.jpg"
+          ],
+          "seedBase": 4000
+        },
+        {
+          "id": "australia",
+          "name": "澳大利亚",
+          "icon": "/assets/icons/sydney_opera_house.png",
+          "map": { "x": 45, "y": 76 },
+          "count": 25,
+          "images": [
+            "/assets/levels/australia-1.jpg",
+            "/assets/levels/australia-2.jpg",
+            "/assets/levels/australia-3.jpg",
+            "/assets/levels/australia-4.jpg"
+          ],
+          "seedBase": 5000
+        }
+      ]
+    }
+  ]
+}

@@ -236,18 +236,33 @@ export class ImageRegistry {
     return gi
   }
 
-  async resolve(id: string): Promise<GameImage | undefined> {
-    const existing = this.map.get(id)
+  /** 解析图片引用 → GameImage。支持:'builtin:<id>'、内存已有 id、用户图、public 路径/远程 URL。 */
+  async resolve(ref: string): Promise<GameImage | undefined> {
+    if (ref.startsWith('builtin:')) return this.map.get(ref.slice('builtin:'.length))
+    const existing = this.map.get(ref)
     if (existing) return existing
-    if (id.startsWith(USER_PREFIX)) {
-      const dataUrl = localStorage.getItem(userKey(id))
+    if (ref.startsWith(USER_PREFIX)) {
+      const dataUrl = localStorage.getItem(userKey(ref))
       if (!dataUrl) return undefined
-      const img = await loadImageEl(dataUrl)
-      const { source, width, height } = downscale(img, MAX_USER_DIM)
-      const gi: GameImage = { id, label: '我的图片', source, width, height }
-      this.map.set(id, gi)
-      return gi
+      return this.loadInto(ref, dataUrl, '我的图片')
+    }
+    // 路径/URL(public 资源图或远程图)
+    if (/^(https?:\/\/|\/|\.)/.test(ref)) {
+      try {
+        return await this.loadInto(ref, ref, '关卡图')
+      } catch {
+        return undefined
+      }
     }
     return undefined
+  }
+
+  /** 从 url/dataURL 加载 → 降采样 → 缓存为 GameImage。 */
+  private async loadInto(id: string, src: string, label: string): Promise<GameImage> {
+    const img = await loadImageEl(src)
+    const { source, width, height } = downscale(img, MAX_USER_DIM)
+    const gi: GameImage = { id, label, source, width, height }
+    this.map.set(id, gi)
+    return gi
   }
 }
