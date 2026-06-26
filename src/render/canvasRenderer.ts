@@ -34,9 +34,14 @@ function drawPieceImage(
 
 export function drawBoardBackground(ctx: CanvasRenderingContext2D, cam: Camera, grid: Grid): void {
   const tl = worldToScreen(cam, 0, 0)
+  const pad = 8
   ctx.save()
-  ctx.fillStyle = 'rgba(0,0,0,0.25)'
-  ctx.fillRect(tl.x - 6, tl.y - 6, grid.imgW * cam.scale + 12, grid.imgH * cam.scale + 12)
+  // 浅色"垫板":拼图像放在带柔影的奶白卡片上
+  ctx.shadowColor = 'rgba(90,60,20,0.28)'
+  ctx.shadowBlur = 18
+  ctx.shadowOffsetY = 6
+  ctx.fillStyle = '#fff9ee'
+  ctx.fillRect(tl.x - pad, tl.y - pad, grid.imgW * cam.scale + pad * 2, grid.imgH * cam.scale + pad * 2)
   ctx.restore()
 }
 
@@ -55,7 +60,7 @@ export function drawPieceCell(
 export function drawEmptyCell(ctx: CanvasRenderingContext2D, cam: Camera, grid: Grid, cellIdx: number): void {
   const s = cellScreen(cam, grid, cellIdx)
   ctx.save()
-  ctx.fillStyle = 'rgba(0,0,0,0.45)'
+  ctx.fillStyle = 'rgba(120,85,40,0.20)'
   ctx.fillRect(s.x, s.y, s.w, s.h)
   ctx.restore()
 }
@@ -80,7 +85,7 @@ export function drawSeams(
     if (s.r < rows - 1 && groupId[i] !== groupId[i + cols]) ctx.fillRect(s.x, s.y + s.h - gap / 2, s.w, gap)
   }
   // 各组外缘描边
-  ctx.strokeStyle = 'rgba(255,255,255,0.45)'
+  ctx.strokeStyle = 'rgba(120,80,30,0.30)'
   ctx.lineWidth = 1
   for (let i = 0; i < n; i++) {
     const s = cellScreen(cam, grid, i)

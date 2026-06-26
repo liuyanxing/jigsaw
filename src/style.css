@@ -1,11 +1,11 @@
 :root {
-  --bg: #10141c;
-  --panel: rgba(18, 24, 36, 0.92);
-  --line: rgba(255, 255, 255, 0.12);
-  --text: #eef2f8;
-  --muted: #aab3c2;
-  --accent: #6fe08c;
-  --accent-d: #34c66a;
+  --bg: #e9dcbf;
+  --panel: rgba(253, 244, 222, 0.97);
+  --line: rgba(120, 84, 30, 0.24);
+  --text: #5e4413;
+  --muted: #9a7b46;
+  --accent: #f5a83a;
+  --accent-d: #e08a2c;
 }
 
 * {
@@ -48,6 +48,7 @@ body {
   gap: 8px;
   padding: 0 10px;
   padding-top: env(safe-area-inset-top, 0);
+  background: linear-gradient(180deg, rgba(255, 249, 236, 0.95), rgba(255, 249, 236, 0));
   z-index: 10;
 }
 
@@ -61,8 +62,9 @@ body {
 }
 
 .stat {
-  color: var(--text);
-  opacity: 0.95;
+  color: #6e4a18;
+  font-weight: 800;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .top-actions {
@@ -71,17 +73,21 @@ body {
 }
 
 .icon-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text);
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  border: 1.5px solid #e0c389;
+  background: linear-gradient(#fff7e6, #f4e2bb);
+  color: #6e4a18;
   font-size: 19px;
   cursor: pointer;
+  box-shadow:
+    0 2px 0 #e3c98f,
+    0 3px 5px rgba(120, 80, 20, 0.18);
 }
 .icon-btn:active {
-  background: rgba(255, 255, 255, 0.16);
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 #e3c98f;
 }
 .icon-btn.off {
   opacity: 0.38;
@@ -93,7 +99,7 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(120, 80, 30, 0.16);
   z-index: 10;
 }
 .progfill {
@@ -107,7 +113,7 @@ body {
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(4, 7, 12, 0.62);
+  background: rgba(60, 40, 15, 0.5);
   backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
@@ -129,7 +135,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 11px;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 18px 50px rgba(90, 60, 20, 0.4);
 }
 .card.hidden {
   display: none;
@@ -152,22 +158,25 @@ body {
 
 .btn {
   appearance: none;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.07);
-  color: var(--text);
+  border: 1.5px solid #e0c389;
+  background: linear-gradient(#fff7e6, #f2e2ba);
+  color: #6e4a18;
   border-radius: 13px;
   padding: 13px 16px;
   font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 2px 0 #e3c98f;
 }
 .btn:active {
   transform: scale(0.985);
 }
 .btn.primary {
-  background: linear-gradient(180deg, var(--accent), var(--accent-d));
+  background: linear-gradient(180deg, #ffd060, #f5a23a);
   border-color: transparent;
-  color: #06241a;
-  font-weight: 700;
+  color: #6b3d00;
+  font-weight: 800;
+  box-shadow: 0 3px 0 #d98a2e;
 }
 
 .diffrow {
@@ -176,19 +185,20 @@ body {
   gap: 8px;
 }
 .diff {
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text);
+  border: 1.5px solid #e0c389;
+  background: rgba(255, 255, 255, 0.55);
+  color: #6e4a18;
   border-radius: 11px;
   padding: 10px 4px;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
 }
 .diff.sel {
-  border-color: var(--accent);
-  background: rgba(111, 224, 140, 0.16);
-  color: var(--accent);
-  font-weight: 700;
+  border-color: #f5a83a;
+  background: rgba(245, 168, 58, 0.18);
+  color: #a85f12;
+  font-weight: 800;
 }
 
 .gallery {

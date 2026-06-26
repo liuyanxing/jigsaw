@@ -30,7 +30,7 @@ export interface GameHooks {
 }
 
 const TOP_INSET = 58
-const BG = '#0f1a17'
+const BG = '#ece1c6' // 暖奶油色:画布底色 + 异组接缝色,统一卡通风
 
 function randomSeed(): number {
   return Math.floor(Math.random() * 0x7fffffff)
