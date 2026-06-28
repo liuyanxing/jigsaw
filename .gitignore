@@ -38,3 +38,8 @@ coverage/
 
 # Vite
 *.local
+
+# Cocos Creator (nested git in subfolder)
+cocos/.git/
+
+cocos-tmp/
